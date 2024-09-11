@@ -25,7 +25,7 @@ description
 - lalu,  kita ubah models.py nya sesuai keinginan kita. karena disini diwajibkan namanya Product, maka kita membuat fungsi dengan nama Product, lalu mendefinisikan setiap atribut wajib dengan fieldnya masing masing (di sini, saya menggunakan CharField untuk nama, TextField untuk desc, dan DeicnalField untuk nomor)
 
 Checklist 5 : Membuat sebuah fungsi pada views.py untuk dikembalikan ke dalam sebuah template HTML yang menampilkan nama aplikasi serta nama dan kelas kamu.
-- lalu, saya membuat direktori template di dalam main. Di dalam folder baru ini, saya membuat .html yang beirsi template untk dimasukkan variabel nama_aplikasi, nama, dan npm yang nantinya akan di set di views.py
+- lalu, saya membuat direktori template di dalam main. Di dalam folder baru ini, saya membuat .html yang beirsi template untk dimasukkan variabel nama_aplikasi, nama, dan kelas yang nantinya akan di set di views.py
 
 Checklist 6 : Membuat sebuah routing pada urls.py aplikasi main untuk memetakan fungsi yang telah dibuat pada views.py.
 
