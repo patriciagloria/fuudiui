@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-(v3fwz@b+pc(h(v45kwnh3wac*40as#tgj&$7c8-2i!is!nvw7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
-
+ALLOWED_HOSTS = ["localhost", "127.0.0.1","patricia-gloria-fuudiui.pbp.cs.ui.ac.id"]
 
 # Application definition
 
@@ -55,14 +54,14 @@ ROOT_URLCONF = 'fuudiui.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],  # Pastikan direktori template diatur dengan benar
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',  # Pastikan ini ada
+                'django.contrib.auth.context_processors.auth',  # Pastikan ini ada
+                'django.contrib.messages.context_processors.messages',  # Pastikan ini ada
             ],
         },
     },
@@ -122,3 +121,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

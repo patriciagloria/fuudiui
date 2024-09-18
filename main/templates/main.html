@@ -1,5 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
 <h1>{{ nama_aplikasi }}</h1>
+
 <h5>Nama: </h5>
 <p>{{ nama }}<p>
+
 <h5>Kelas: </h5>
-<p>{{ kelas }}<p>
+<p>{{ kelas }}</p>
+
+{% if not product_entries %}
+<p>Belum ada data product.</p>
+{% else %}
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Description</th>
+  </tr>
+
+  {% comment %} cara memperlihatkan data product
+  {% endcomment %} 
+  {% for product_entry in product_entries %}
+  <tr>
+    <td>{{product_entry.name}}</td>
+    <td>{{product_entry.price}}</td>
+    <td>{{product_entry.description}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<br />
+
+<a href="{% url 'main:create_product_entry' %}">
+  <button>Add New Product</button>
+</a>
+{% endblock content %}
