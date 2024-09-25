@@ -35,7 +35,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\lenovo\OneDrive\Desktop\fuudiui\env"
+VIRTUAL_ENV="D:\onedriveui\OneDrive - UNIVERSITAS INDONESIA\Desktop\fuudiui\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
