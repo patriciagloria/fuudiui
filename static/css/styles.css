@@ -1,0 +1,9 @@
+.login-background {
+    background-image: url('/static/images/logpic.png');
+    background-size: cover;
+    background-position: center;
+    height: 100vh; /* Full viewport height */
+    width: 100vw; /* Full viewport width */
+  }
+  
+

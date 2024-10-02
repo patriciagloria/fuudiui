@@ -225,3 +225,34 @@ Import yang telah kita perlukan (datetime, HttpResponseRedirect, reverse). Lalu,
 *response.delete_cookie('last_login')*
 
 Setelah mengatur semua fungsi, kita tinggal menambahkan tampilan *sesi terakhir login* pada *main.html*
+
+# TUGAS 5
+
+1.  Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+Saat ada beberapa CSS selector yang berlaku untuk satu elemen HTML, browser menentukan mana yang diterapkan berdasarkan specificity dan urutan penulisannya. Specificity diukur berdasarkan jenis selector yang digunakan, di mana selector dengan spesifisitas lebih tinggi akan memiliki prioritas lebih tinggi. Sebagai contoh, selector ID (#id) memiliki prioritas lebih tinggi dibandingkan dengan selector kelas (.class) atau tag (div).
+
+Selain specificity, jika dua selector memiliki tingkat prioritas yang sama, maka yang ditulis terakhir dalam file CSS akan diutamakan. Inline styles yang ditulis langsung di atribut style pada elemen HTML memiliki prioritas tertinggi dibandingkan selector lainnya. Dengan memahami urutan prioritas ini, pengembang dapat menulis CSS yang lebih efektif dan menghindari konflik antar gaya yang diterapkan pada elemen yang sama.
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!
+Responsive design penting dalam pengembangan aplikasi web karena pengguna mengakses internet melalui berbagai perangkat dengan ukuran layar yang berbeda, seperti smartphone, tablet, dan desktop. Dengan menerapkan responsive design, tampilan website dapat menyesuaikan secara otomatis sehingga tetap nyaman dan mudah digunakan di semua perangkat. Ini meningkatkan pengalaman pengguna dan memastikan bahwa konten dapat diakses dengan baik tanpa perlu zoom atau scroll berlebihan.
+
+Contoh aplikasi yang sudah menerapkan responsive design adalah Instagram dan Twitter, di mana antarmuka mereka secara dinamis menyesuaikan dengan ukuran layar perangkat yang digunakan. Sebaliknya, banyak website lama perusahaan atau beberapa forum online masih menggunakan layout tetap yang tidak responsif, membuat navigasi dan membaca konten menjadi sulit di perangkat mobile. Implementasi responsive design membantu memastikan bahwa aplikasi web tetap relevan dan kompetitif di era perangkat mobile yang terus berkembang.
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+Margin, border, dan padding adalah tiga properti CSS yang digunakan untuk mengatur ruang di sekitar elemen, namun masing-masing memiliki fungsi yang berbeda. Margin mengatur ruang di luar border elemen, berfungsi sebagai jarak antara elemen satu dengan lainnya. Misalnya, margin: 20px; akan memberikan ruang 20 piksel di sekitar elemen tersebut. Border adalah garis pembatas di sekitar elemen yang dapat diatur ketebalan, gaya, dan warnanya, seperti border: 2px solid black;.
+
+Sementara itu, padding mengatur ruang di dalam border elemen, antara border dan konten elemen. Contohnya, padding: 15px; akan memberikan ruang 15 piksel di dalam elemen tersebut. 
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+Flexbox dan Grid adalah dua teknik layout di CSS yang sangat membantu saya dalam mengatur elemen-elemen di halaman web dengan lebih mudah dan fleksibel. Flexbox (Flexible Box Layout) dirancang untuk mengatur elemen dalam satu arah, baik itu secara horizontal maupun vertikal. Misalnya, saat saya ingin membuat navigasi yang rapi atau menyusun item dalam satu baris yang dapat menyesuaikan ukuran layar, Flexbox adalah pilihan yang tepat. Dengan Flexbox, saya bisa dengan mudah mengatur jarak antar elemen, menyelaraskan posisi mereka, dan memastikan semuanya tetap teratur meski ukuran layar berubah-ubah.
+
+Di sisi lain, Grid Layout menawarkan kemampuan yang lebih powerful karena memungkinkan saya mengatur elemen dalam dua dimensi sekaligus, yaitu baris dan kolom. Ini sangat berguna ketika saya ingin membuat layout yang lebih kompleks seperti halaman utama dengan header, sidebar, konten utama, dan footer. Grid memudahkan penempatan elemen di area tertentu tanpa harus repot mengatur posisi satu per satu. Dengan Grid, saya bisa menciptakan desain yang lebih terstruktur dan responsif, memastikan tampilan web tetap menarik di berbagai perangkat. Kombinasi Flexbox dan Grid memungkinkan saya untuk membangun layout yang fleksibel dan terorganisir dengan baik tanpa banyak kesulitan.
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+
+-  Implementasikan fungsi untuk menghapus dan mengedit product.
+Caranya adalah dengan pertama-tama menambahkan dahulu taiwind ke aplikasi, lalu buat fungsi edit_product di views.py dan juga membuat edit_product.html. Lalu, atur urlnya dan juga menambahkan button pada main.html. Begitu juyga dengan delete. Saya membuat terlebih dahulu delete_product di views, lalu atur url dan buat button di main.html
+
+-  Kustomisasi desain pada template HTML yang telah dibuat pada tugas-tugas sebelumnya menggunakan CSS atau CSS framework (seperti Bootstrap, Tailwind, Bulma)
+Saya bisa mulai dengan menambahkan file CSS eksternal untuk bg login ke dalam HTML, lalu menulis aturan-aturan gaya untuk mengubah warna, font, margin, padding, dan elemen lainnya. Misalnya, dengan mengubah properti background-color atau font-family, saya dapat memberikan nuansa yang berbeda pada halaman web. Selain itu, saya juga  menggunakan selektor kelas dan ID untuk menargetkan elemen tertentu dan menerapkan gaya yang lebih spesifik.  Kustomisasi ini memungkinkan saya untuk menciptakan tampilan yang unik dan sesuai dengan identitas merek atau preferensi pribadi.
+
+
+
