@@ -254,5 +254,156 @@ Caranya adalah dengan pertama-tama menambahkan dahulu taiwind ke aplikasi, lalu 
 -  Kustomisasi desain pada template HTML yang telah dibuat pada tugas-tugas sebelumnya menggunakan CSS atau CSS framework (seperti Bootstrap, Tailwind, Bulma)
 Saya bisa mulai dengan menambahkan file CSS eksternal untuk bg login ke dalam HTML, lalu menulis aturan-aturan gaya untuk mengubah warna, font, margin, padding, dan elemen lainnya. Misalnya, dengan mengubah properti background-color atau font-family, saya dapat memberikan nuansa yang berbeda pada halaman web. Selain itu, saya juga  menggunakan selektor kelas dan ID untuk menargetkan elemen tertentu dan menerapkan gaya yang lebih spesifik.  Kustomisasi ini memungkinkan saya untuk menciptakan tampilan yang unik dan sesuai dengan identitas merek atau preferensi pribadi.
 
+# TUGAS 6
+Q : Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!
+A : Dengan JavaScript, saya bisa membuat halaman web yang interaktif dan dinamis. Misalnya, saat saya ingin menambahkan efek animasi, validasi form di sisi pengguna, atau membuat konten yang bisa berubah tanpa perlu me-refresh seluruh halaman, JavaScript lah yang memungkinkan hal itu. Selain itu, JavaScript juga mendukung komunikasi asinkron dengan server melalui teknologi seperti AJAX. Ini memungkinkan saya untuk mengambil data dari server dan memperbarui bagian tertentu dari halaman tanpa harus memuat ulang seluruh halaman. Hasilnya, pengalaman pengguna jadi lebih mulus dan responsif.
+
+
+Q : Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?
+A : Pengambilan data selesai sebelum melanjutkan eksekusi kode berikutnya. Ini memastikan bahwa kita mendapatkan respons dari server sebelum mencoba memprosesnya, sehingga mencegah error akibat data yang belum tersedia.
+
+Jika kita tidak menggunakan await, kode akan berjalan secara asinkron dan mungkin mencoba memproses respons sebelum data diterima, yang dapat menyebabkan error atau hasil yang tidak diinginkan. Tanpa await, fetch() mengembalikan Promise yang belum terpenuhi, sehingga data yang kita harapkan mungkin belum siap saat kita mencoba menggunakannya.
+
+Q :  Mengapa kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST?
+A : Kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST karena Django secara default menerapkan perlindungan CSRF pada semua request POST. Jika kita tidak menonaktifkan perlindungan ini atau tidak mengirim token CSRF dengan benar, request AJAX kita akan ditolak oleh server.
+
+Dengan menambahkan @csrf_exempt, kita memberitahu Django untuk tidak memeriksa token CSRF pada view tersebut, sehingga request AJAX bisa diproses. Namun, penting untuk diingat bahwa ini dapat membuka celah keamanan, jadi sebaiknya tetap mengirim token CSRF dalam request AJAX dan tidak menggunakan @csrf_exempt jika memungkinkan.
+
+Q : Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?
+Melakukan pembersihan data input di backend sangat penting karena kita tidak bisa sepenuhnya mengandalkan frontend untuk validasi data. Pengguna bisa memanipulasi frontend atau mengirim request langsung ke server tanpa melalui interface yang kita sediakan, sehingga data berbahaya bisa masuk jika hanya melakukan validasi di frontend.
+
+Dengan memvalidasi dan membersihkan data di backend, kita memastikan bahwa semua data yang masuk aman dan sesuai dengan yang diharapkan, terlepas dari bagaimana data tersebut dikirim. Ini membantu mencegah berbagai serangan seperti SQL Injection atau Cross-Site Scripting (XSS) yang dapat membahayakan aplikasi kita.
+
+Q : Mengimplementasikan checklist : 
+- AJAX GET
+ 1. Ubahlah kode cards data mood agar dapat mendukung AJAX GET.
+ntuk mendukung AJAX GET pada produk, saya sudah menambahkan elemen kosong di halaman utama di dalam main.html untuk menampung daftar produk. Ini dilakukan dengan menggunakan elemen <div id="product_entry_cards"></div>. Kontainer ini akan diisi secara dinamis setelah data produk diambil menggunakan AJAX. Selanjutnya, saya akan menulis fungsi JavaScript di dalam main.html yang menggunakan fetch() untuk mengambil data produk dari server dan memasukkannya ke dalam elemen ini tanpa perlu reload halaman. Disini dapat terlihat dari main.html dibagian async function getProductEntries() dan async function refreshProductEntries().
+
+ 2. Lakukan pengambilan data mood menggunakan AJAX GET. Pastikan bahwa data yang diambil hanyalah data milik pengguna yang logged-in.
+Untuk memastikan data yang diambil hanyalah produk milik pengguna yang login, saya akan menggunakan fetch() untuk melakukan request GET ke endpoint yang mengembalikan daftar produk berdasarkan request.user. Di server-side, di views.py, query sudah difilter untuk hanya mengambil produk milik pengguna yang login. Fungsi show_json() akan memastikan bahwa hanya data yang relevan dengan pengguna tersebut yang dikembalikan.
+def show_json(request):
+    data = Product.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+Setelah mendapatkan respons JSON dari server, JavaScript akan memproses data tersebut dan menampilkan produk-produk yang sesuai ke dalam elemen #product_entry_cards. Dengan ini, produk-produk langsung ditampilkan di halaman tanpa perlu reload seluruh halaman.
+- AJAX POST
+ 1. Buatlah sebuah tombol yang membuka sebuah modal dengan form untuk menambahkan mood.
+Untuk membuat tombol yang membuka modal, saya sudah menambahkan tombol ini di bagian sidebar dalam main.html:
+<button onclick="showModal()" class="w-32 h-12 bg-[#ec6841] rounded-lg flex items-center justify-center cursor-pointer">
+    <span class="text-[#fbe6d2] font-bold">Add New Product by AJAX</span>
+</button>
+Tombol ini akan memanggil fungsi showModal() yang akan membuka modal produk menggunakan JavaScript. Fungsi showModal() mengubah tampilan modal dari hidden menjadi terlihat dengan animasi, seperti berikut:
+function showModal() {
+    const modal = document.getElementById('crudModal');
+    const modalContent = document.getElementById('crudModalContent');
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+      modalContent.classList.remove('scale-95', 'opacity-0');
+      modalContent.classList.add('scale-100', 'opacity-100');
+    }, 50);
+}
+
+2. Modal di-trigger dengan menekan suatu tombol pada halaman utama. Saat penambahan mood berhasil, modal harus ditutup dan input form harus dibersihkan dari data yang sudah dimasukkan ke dalam form sebelumnya. Jika penambahan gagal, tampilkan pesan error.
+Setelah pengguna menambahkan produk melalui form di modal, saya menggunakan fungsi addProductEntry() yang menangani request AJAX. Jika produk berhasil ditambahkan, modal akan ditutup dan form akan dibersihkan menggunakan kode berikut:
+async function addProductEntry() {
+    const csrftoken = getCSRFToken();
+    try {
+      const response = await fetch("{% url 'main:add_product_entry_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.getElementById('productEntryForm')),
+        headers: {
+          'X-CSRFToken': csrftoken,
+          'Accept': 'application/json',
+        }
+      });
+
+      if (response.status === 201) {
+        await refreshProductEntries();
+        document.getElementById("productEntryForm").reset(); 
+        hideModal();  // Tutup modal setelah berhasil
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to add product entry:', errorData);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+}
+
+ 3. Buatlah fungsi view baru untuk menambahkan mood baru ke dalam basis data.
+ Untuk membuat fungsi view yang menambahkan produk baru, kita ke file views.py. 
+ @csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    price = request.POST.get("price")
+    description = strip_tags(request.POST.get("description"))
+    user = request.user
+
+    if not price:
+        return HttpResponse(b"Price is required.", status=400)
+
+    try:
+        price = float(price)
+    except ValueError:
+        return HttpResponse(b"Invalid price value.", status=400)
+
+    new_product = Product(name=name, description=description, price=price, user=user)
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
+
+
+
+ 4. Buatlah path /create-ajax/ yang mengarah ke fungsi view yang baru kamu buat.
+ Di file urls.py, kita bisa membuat path baru yang mengarah ke view untuk menambahkan product dengan menambahkan baris path('create-product-entry-ajax', add_product_entry_ajax, name='add_product_entry_ajax'),
+
+
+ 5. Hubungkan form yang telah kamu buat di dalam modal kamu ke path /create-ajax/.
+ Form yang ada di dalam modal bisa dihubungkan dengan path /create-ajax/ melalui penggunaan AJAX, dalam hal ini menggunakan addProductEntry()  yang mengirimkan data form menggunakan fetch()
+ fetch("{% url 'main:add_product_entry_ajax' %}", {
+    method: "POST",
+    body: new FormData(document.getElementById('productEntryForm')),
+    headers: {
+      'X-CSRFToken': csrftoken,
+      'Accept': 'application/json',
+    }
+});
+
+
+ 6. Lakukan refresh pada halaman utama secara asinkronus untuk menampilkan daftar mood terbaru tanpa reload halaman utama secara keseluruhan.
+ Untuk menampilkan daftar menu terbaru tanpa me-refresh seluruh halaman, kita bisa menggunakan AJAX GET untuk mengambil data terbaru dan menampilkannya secara dinamis di halaman. async function refreshProductEntries() {
+    try {
+      const productEntries = await getProductEntries();
+      let htmlString = "";
+      if (productEntries.length === 0) {
+        document.getElementById("no_products_message").classList.remove("hidden");
+        document.getElementById("product_entry_cards").classList.add("hidden");
+      } else {
+        document.getElementById("no_products_message").classList.add("hidden");
+        document.getElementById("product_entry_cards").classList.remove("hidden");
+        productEntries.forEach((item) => {
+          const name = DOMPurify.sanitize(item.fields.name);
+          const price = DOMPurify.sanitize(item.fields.price);
+          const description = DOMPurify.sanitize(item.fields.description);
+          htmlString += `
+            <div class="bg-[#fffaf2] border-4 border-[#ec6841] rounded-xl p-6 flex flex-col items-center space-y-4 shadow-md">
+              <h3 class="text-xl font-semibold text-center">${name}</h3>
+              <div class="w-full bg-[#FFC24C] rounded-lg p-4 text-center">
+                <p class="text-gray-800">${description}</p>
+              </div>
+              <div class="flex items-center justify-between w-full mt-4">
+                <span class="text-[#ec6841] text-lg font-bold">${price}</span>
+              </div>
+            </div>
+          `;
+        });
+      }
+      document.getElementById("product_entry_cards").innerHTML = htmlString;
+    } catch (error) {
+      console.error('Error refreshing product entries:', error);
+    }
+}
+
 
 

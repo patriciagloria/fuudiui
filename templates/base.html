@@ -1,15 +1,19 @@
+<!-- base.html -->
 {% load static %}
 <!DOCTYPE html>
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% block meta %} {% endblock meta %}
+    {% block meta %}{% endblock meta %}
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Global Styles -->
     <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+    <!-- Remove the following line as you intend to delete custom.css -->
+    <!-- <link rel="stylesheet" href="{% static 'css/custom.css' %}"> -->
   </head>
-  <body>
-    {% block content %} {% endblock content %}
+  <body class="bg-[#fffaf2]">
+    {% block content %}{% endblock content %}
   </body>
 </html>

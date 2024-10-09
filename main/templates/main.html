@@ -1,49 +1,271 @@
+<!-- main.html -->
 {% extends 'base.html' %}
 {% load static %}
 
 {% block meta %}
 <title>Fuudiui</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
 {% endblock meta %}
+
 {% block content %}
-{% include 'navbar.html' %}
-<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-100 flex flex-col">
-  <div class="p-2 mb-6 relative">
-    <div class="relative grid grid-cols-1 z-30 md:grid-cols-3 gap-8">
-      {% include "card_info.html" with title='NPM' value=npm %}
-      {% include "card_info.html" with title='Name' value=name %}
-      {% include "card_info.html" with title='Class' value=class %}
-    </div>
-    <div class="w-full px-6  absolute top-[44px] left-0 z-20 hidden md:flex">
-      <div class="w-full min-h-4 bg-indigo-700">
-      </div>
-    </div>
-    <div class="h-full w-full py-6  absolute top-0 left-0 z-20 md:hidden flex ">
-      <div class="h-full min-w-4 bg-indigo-700 mx-auto">
-      </div>
-    </div>
-</div>
-    <div class="px-3 mb-4">
-      <div class="flex rounded-md items-center bg-indigo-600 py-2 px-4 w-fit">
-        <h1 class="text-white text-center">Last Login: {{last_login}}</h1>
-      </div>
-    </div>
-    <div class="flex justify-end mb-6">
-        <a href="{% url 'main:create_product_entry' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
-            Add New Product
+<script>
+    const STATIC_URL = "{% static 'images/' %}";
+</script>
+<div class="flex">
+  <!-- Sidebar -->
+  <div class="fixed top-0 left-0 h-screen w-full md:w-1/2 bg-[#fffaf2] p-6 flex flex-col items-center overflow-y-auto">
+    <!-- Navbar-like Section -->
+    <div class="w-full mb-6 relative">
+      <!-- Navbar without SVG -->
+      <div class="w-full bg-[#409065] rounded-lg flex items-center justify-between px-4 py-2">
+        <!-- Website Name -->
+        <h1 class="text-xl font-bold text-[#fbe6d2]">Fuudiui</h1>
+        <!-- Logout Button -->
+        <a href="{% url 'main:logout' %}" class="bg-[#fffaf2] text-black font-bold py-2 px-4 rounded-full shadow-md transition duration-300 hover:bg-gray-200">
+          LOGOUT
         </a>
+      </div>
     </div>
-    
-    {% if not product_entries %}
-    <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
-        <img src="{% static 'images/ayoisi' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
-        <p class="text-center text-gray-600 mt-4">Belum ada menu. Ayo tambahkan item!</p>
+
+    <!-- Illustration -->
+    <img src="{% static 'images/illustration.svg' %}" alt="Illustration" class="w-3/4 mb-6"/>
+
+    <!-- Page Title and User Info -->
+    <h1 class="text-2xl font-bold mb-2">{{ name }}</h1>
+    <p class="text-[#5B5B5B]">NPM Number: {{ npm }}</p>
+    <p class="text-[#5B5B5B]">Class: {{ user_class }}</p>
+    <p class="text-[#5B5B5B]">Last Login: {{ last_login }}</p>
+
+    <!-- Spacer to push buttons to the bottom -->
+    <div class="flex-grow"></div>
+
+    <!-- Action Buttons -->
+    <div class="flex space-x-4 mb-6">
+      <!-- Add New Product Button -->
+      <button onclick="window.location.href='{% url 'main:create_product_entry' %}'" class="w-32 h-12 bg-[#ec6841] rounded-lg flex items-center justify-center cursor-pointer">
+        <span class="text-[#fbe6d2] font-bold">Add New Product</span>
+      </button>
+      <!-- Add New Product by AJAX Button -->
+      <button onclick="showModal()" class="w-32 h-12 bg-[#ec6841] rounded-lg flex items-center justify-center cursor-pointer">
+        <span class="text-[#fbe6d2] font-bold">Add New Product by AJAX</span>
+      </button>
     </div>
-    {% else %}
-    <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
-        {% for product_entry in product_entries %}
-            {% include 'card_product.html' with product_entry=product_entry %}
-        {% endfor %}
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="ml-0 md:ml-[50%] w-full bg-[#fbe6d2] p-6 min-h-screen overflow-y-auto">
+    <div id="product_entry_cards" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Product cards will be dynamically inserted here via JavaScript -->
     </div>
-    {% endif %}
+
+    <!-- No Products Message -->
+    <div id="no_products_message" class="hidden flex flex-col items-center justify-center p-6">
+      <img src="{% static 'images/sedih-banget.png' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
+      <p class="text-center text-gray-600 mt-4">Belum ada data product pada Fuudiui.</p>
+    </div>
+
+    <!-- Modal for AJAX Product Creation -->
+    <div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+      <div id="crudModalContent" class="bg-white rounded-lg p-6 w-full max-w-lg shadow-lg transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <!-- Modal Header -->
+        <div class="flex justify-between items-center mb-4">
+          <h3 id="modalTitle" class="text-xl font-semibold">Add New Product</h3>
+          <button type="button" class="text-gray-400 hover:text-gray-900" id="closeModalBtn" aria-label="Close modal">
+            <!-- Close Icon SVG -->
+            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414 1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <form id="productEntryForm" class="space-y-4">
+          {% csrf_token %}
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+            <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter your product" required>
+          </div>
+          <div>
+            <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+            <input type="number" step="0.01" id="price" name="price" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter price" required>
+          </div>
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+            <textarea id="description" name="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Describe your product" required></textarea>
+          </div>
+          
+          <!-- Modal Footer -->
+          <div class="flex justify-end space-x-2">
+            <button type="button" onclick="hideModal()" class="py-2 px-4 bg-gray-500 hover:bg-gray-600 text-white font-bold rounded-lg">
+              Cancel
+            </button>
+            <button type="submit" class="py-2 px-4 bg-indigo-700 hover:bg-indigo-600 text-white font-bold rounded-lg">
+              Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- JavaScript for Modal and AJAX Functionality -->
+<script>
+  // Function to show the modal with animation
+  function showModal() {
+    const modal = document.getElementById('crudModal');
+    const modalContent = document.getElementById('crudModalContent');
+
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+      modalContent.classList.remove('scale-95', 'opacity-0');
+      modalContent.classList.add('scale-100', 'opacity-100');
+    }, 50);
+  }
+
+  // Function to hide the modal with animation
+  function hideModal() {
+    const modal = document.getElementById('crudModal');
+    const modalContent = document.getElementById('crudModalContent');
+
+    modalContent.classList.remove('scale-100', 'opacity-100');
+    modalContent.classList.add('scale-95', 'opacity-0');
+
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 300); // Match the transition duration
+  }
+
+  // Event listeners for closing the modal
+  document.getElementById("closeModalBtn").addEventListener("click", hideModal);
+  document.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('crudModal');
+    if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+      hideModal();
+    }
+  });
+
+  // Function to retrieve CSRF token from cookies
+  function getCSRFToken() {
+    let cookieValue = null;
+    const name = 'csrftoken';
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  // Function to add a new product entry via AJAX
+  async function addProductEntry() {
+    const csrftoken = getCSRFToken();
+    try {
+      const response = await fetch("{% url 'main:add_product_entry_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.getElementById('productEntryForm')),
+        headers: {
+          'X-CSRFToken': csrftoken,
+          'Accept': 'application/json',
+        }
+      });
+
+      if (response.status === 201) {
+        await refreshProductEntries();
+        document.getElementById("productEntryForm").reset(); 
+        hideModal();
+      } else {
+        const errorData = await response.json();
+        console.error('Failed to add product entry:', errorData);
+        // Optionally, display error messages to the user
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      // Optionally, notify the user of the error
+    }
+  }
+
+  // Function to fetch product entries via AJAX
+  async function getProductEntries(){
+    const response = await fetch("{% url 'main:show_json' %}");
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  }
+
+  // Function to refresh the product entries on the page
+  async function refreshProductEntries() {
+    try {
+      const productEntries = await getProductEntries();
+      let htmlString = "";
+      let classNameString = "";
+
+      if (productEntries.length === 0) {
+        // Show 'No products' message
+        document.getElementById("no_products_message").classList.remove("hidden");
+        document.getElementById("product_entry_cards").classList.add("hidden");
+      }
+      else {
+        document.getElementById("no_products_message").classList.add("hidden");
+        document.getElementById("product_entry_cards").classList.remove("hidden");
+
+        classNameString = "grid grid-cols-1 md:grid-cols-2 gap-6";
+        productEntries.forEach((item) => {
+          const name = DOMPurify.sanitize(item.fields.name);
+          const price = DOMPurify.sanitize(item.fields.price);
+          const description = DOMPurify.sanitize(item.fields.description);
+          htmlString += `
+            <div class="bg-[#fffaf2] border-4 border-[#ec6841] rounded-xl p-6 flex flex-col items-center space-y-4 shadow-md">
+              <h3 class="text-xl font-semibold text-center">${name}</h3>
+              <div class="w-full bg-[#FFC24C] rounded-lg p-4 text-center">
+                <p class="text-gray-800">${description}</p>
+              </div>
+              <div class="flex items-center justify-between w-full mt-4">
+                <a href="/edit-product/${item.pk}/" class="text-[#4CAF50] hover:scale-105 transition duration-300">
+                  <img src="${STATIC_URL}edit.svg" alt="Edit" class="w-6 h-6"/>
+                </a>
+                <span class="text-[#ec6841] text-lg font-bold">${price}</span>
+                <a href="/delete/${item.pk}/" class="text-[#354E5E] hover:scale-105 transition duration-300">
+                  <img src="${STATIC_URL}trash.svg" alt="Delete" class="w-6 h-6"/>
+                </a>
+              </div>
+            </div>
+          `;
+        });
+      }
+      document.getElementById("product_entry_cards").className = classNameString;
+      document.getElementById("product_entry_cards").innerHTML = htmlString;
+    } catch (error) {
+      console.error('Error refreshing product entries:', error);
+      // Optionally, display an error message to the user
+    }
+  }
+
+  // Event listener for form submission
+  document.getElementById("productEntryForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    addProductEntry();
+  });
+  document.addEventListener("DOMContentLoaded", function() {
+    refreshProductEntries();
+  });
+
+  // Initial load of product entries
+  refreshProductEntries();
+
+  // // Event listener for form submission
+  // document.getElementById("productEntryForm").addEventListener("submit", (e) => {
+  //   e.preventDefault();
+  //   addProductEntry();
+  // });
+
+  // // Initial load of product entries
+  // refreshProductEntries();
+</script>
 {% endblock content %}
